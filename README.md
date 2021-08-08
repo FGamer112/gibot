@@ -3,10 +3,10 @@ This is automated script for github repo controlling. Just place it near folder 
 
 If you launch the script first time go to the settings and change your Github Username, Email and API-key.
 ____
-**Requirements**:
-Python3:
-`apt install python3`
-Pip3:
-`apt install python-pip`
-PyInquirer:
-`pip3 install PyInquirer`
+##**Requirements**:
+###Python3:
+##`apt install python3`
+###Pip3:
+##`apt install python-pip`
+##PyInquirer:
+###`pip3 install PyInquirer`
