@@ -30,6 +30,10 @@ if exist != "[('saves',)]":
     con.commit()
 #--------------------------------------------------
 
+#Starting
+repos = []
+#--------------------------------------------------
+
 #Main vars
 GH_API_TOKEN = api_from_db
 GH_USER = user_from_db
@@ -52,6 +56,63 @@ os.system("clear")
 
 answer = ""
 
+#Starting
+def start():
+    os.system("clear")
+    questions = [{
+            'type': 'list',
+            'name': 'start',
+            'message': '',
+            'choices': ['Local', 'Github']
+    }]
+    answers = prompt(questions, style=custom_style_2)
+    answer = str(answers["start"])
+    if answer == "Github":
+        github_parse()
+    else: par_ch()
+
+#Parsing from Github
+def github_parse():
+    os.system("clear")
+    global repos
+    repos = []
+    headers = {
+                    "Authorization": f"token {GH_API_TOKEN}"
+            }
+    response = requests.get('https://api.github.com/user/repos', headers=headers)
+    json_answer = response.json()
+    for dicts in json_answer:
+        repos.append(dicts["name"])
+    repos.append(Separator())
+    repos.append("Back")
+    questions = [{
+            'type': 'list',
+            'name': 'start',
+            'message': 'Choose your repo:',
+            'choices': repos
+    }]
+    answers = prompt(questions, style=custom_style_2)
+    answer = str(answers["start"])
+    repos = str(answers["start"])
+    if answer == "Back":
+        start()
+    else:
+        os.system("clear")
+        questions = [
+        {
+            'type': 'confirm',
+            'message': 'Repo | %s |, continue?' %answer,
+            'name': 'continue',
+            'default': True,
+        }
+    ]
+    answers = prompt(questions, style=custom_style_2)
+    pprint(answers)
+    if answers["continue"] == True:
+        print("CLONING...")
+        os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
+
+
 #MAIN MODULE folders parsing and choosing
 def par_ch():
     contlist = []
@@ -60,6 +121,7 @@ def par_ch():
             contlist.append(name)
     contlist.append(Separator())
     contlist.append("Settings")
+    contlist.append("Back")
     questions = [
         {
             'type': 'list',
@@ -76,6 +138,8 @@ def par_ch():
     NEW_REPO_NAME = name_of_folder
     if answer == "Settings":
         sett()
+    elif answer == "Back":
+        start()
     else: dwnld_yn()
 #--------------------------------------------------
 
@@ -234,4 +298,4 @@ def just_dwnld():
         print(f"Status-code: {response.status_code}\n")
         os.system("cd "+path+"/"+name_of_folder+f" && git init && git add . && git config remote.origin.url https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder} && git push -u origin main && git commit -m 'update' && git branch -M main && git remote add origin https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder}.git && git push https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder}.git -u origin main")
 #--------------------------------------------------
-par_ch()
+start()
