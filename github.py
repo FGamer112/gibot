@@ -183,6 +183,7 @@ def checkin():
 
             #OPTION refresh
             if answers["ch"] == "Refresh":
+                message = str(input("Commit message: "))
                 print("\nREFRESHING...\n")
                 headers = {
                             "Authorization": f"token {GH_API_TOKEN}",
@@ -191,7 +192,7 @@ def checkin():
 
                 response = requests.patch('https://api.github.com/repos/FGamer112/%s'%name_of_folder, headers=headers, data=data, auth=(f"{GH_USER}", f"{GH_API_TOKEN}"))
                 print(f"Status-code: {response.status_code}\n")
-                os.system("cd "+path+"/"+name_of_folder+f" && git init && git add . && git push -u origin main && git commit -m 'update' && git branch -M main &&  git config remote.origin.url https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder} && git push https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder}.git -u origin main")
+                os.system("cd "+path+"/"+name_of_folder+f" && git init && git add . && git push -u origin main && git commit -m '{message}' && git branch -M main &&  git config remote.origin.url https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder} && git push https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder}.git -u origin main")
             #--------------------------------------------------
 
             #OPTION Replace with local repo
