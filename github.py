@@ -100,8 +100,8 @@ def github_parse():
             }
     response = requests.get('https://api.github.com/user/repos', headers=headers)
     json_answer = response.json()
-    for dicts in json_answer:
-        repos.append(dicts["name"])
+    for list in json_answer:
+        repos.append(list["name"])
     repos.append(Separator())
     repos.append("Back")
     menu("list", "start", "Choose your repo", repos)
@@ -164,7 +164,7 @@ def checkin():
 
                 response = requests.patch('https://api.github.com/repos/FGamer112/%s'%name_of_folder, headers=headers, data=data, auth=(f"{GH_USER}", f"{GH_API_TOKEN}"))
                 print(f"Status-code: {response.status_code}\n")
-                os.system("cd "+path+"/"+name_of_folder+f" && git init && git add . && git commit -m '{message}' && git branch -M main && git push -u origin main &&  git config remote.origin.url https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder} && git push https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder}.git -u origin main")
+                os.system("cd "+path+"/"+name_of_folder+f" && git init && git add . && git branch -M main && git commit -m '{message}' && git config remote.origin.url https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder} && git remote add origin https://github.com/FGamer112/MyTelega.git && git push https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder}.git -u origin/main --all")
             #--------------------------------------------------
 
             #OPTION Replace with local repo
