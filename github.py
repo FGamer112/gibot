@@ -41,6 +41,7 @@ name_of_folder = ""
 api_for_print = api_from_db[0:4]+("*"*32)+api_from_db[36:40]
 answer = ""
 answers = ""
+confirming = False
 def menu(view, name, message, choises):
     global answer
     global answers
@@ -111,9 +112,9 @@ def github_parse():
     else:
         os.system("clear")
         confirming()
-    if answers["continue"] == True:
-        print("CLONING...")
-        os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
+        if answers["continue"] == True:
+            print("CLONING...")
+            os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
 
 
 #MAIN MODULE folders parsing and choosing
