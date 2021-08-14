@@ -115,7 +115,7 @@ def github_parse():
         if answers["continue"] == True:
             print("CLONING...")
             os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
-
+#AAAAAAAAAAAAAAAAAAA
 
 #MAIN MODULE folders parsing and choosing
 def par_ch():
