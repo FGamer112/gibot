@@ -167,7 +167,7 @@ def checkin():
                 response = requests.patch('https://api.github.com/repos/FGamer112/%s'%name_of_folder, headers=headers, data=data, auth=(f"{GH_USER}", f"{GH_API_TOKEN}"))
                 print(f"Status-code: {response.status_code}\n")
                 refreshing = open("refresh.sh", "w")
-                refreshing.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", f"git commit -m '{message}'\n", "git push -u origin main\n"])
+                refreshing.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", f"git commit -m '{message}'\n", f"git remote add origin https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}.git", "git push -u origin main\n"])
                 refreshing.close()
                 os.system(f"cd {path} && chmod +x refresh.sh && ./refresh.sh")
             #--------------------------------------------------
