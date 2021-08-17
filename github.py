@@ -98,12 +98,12 @@ def github_parse():
     global repos
     repos = []
     headers = {
-                    "Authorization": f"token {GH_API_TOKEN}"
+                    "Authorization": f"token {api_from_db}"
             }
     response = requests.get('https://api.github.com/user/repos', headers=headers)
     json_answer = response.json()
-    for list in json_answer:
-        repos.append(list["name"])
+    for dict in json_answer:
+        repos.append(dict["name"])
     repos.append(Separator())
     repos.append("Back")
     menu("list", "start", "Choose your repo", repos)
