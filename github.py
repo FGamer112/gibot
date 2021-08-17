@@ -5,7 +5,7 @@ from examples import custom_style_2
 import os
 import requests
 import sqlite3
-
+#IGOR
 
 #Prechecking, setting up, creating DB
 con = sqlite3.connect("datas.db")
@@ -79,6 +79,7 @@ os.system(f"git config --global user.name {GH_USER}")
 os.system(f"git config --global user.email {GH_EMAIL}")
 os.system("clear")
 
+
 answer = ""
 
 #Starting
@@ -115,7 +116,7 @@ def github_parse():
         if answers["continue"] == True:
             print("CLONING...")
             os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
-#AAAAAAAAAAAAAAAAAAA
+
 
 #MAIN MODULE folders parsing and choosing
 def par_ch():
@@ -165,7 +166,10 @@ def checkin():
 
                 response = requests.patch('https://api.github.com/repos/FGamer112/%s'%name_of_folder, headers=headers, data=data, auth=(f"{GH_USER}", f"{GH_API_TOKEN}"))
                 print(f"Status-code: {response.status_code}\n")
-                os.system("cd "+path+"/"+name_of_folder+f" && git init && git add . && git branch -M main && git commit -m '{message}' && git config remote.origin.url https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder} && git remote add origin https://github.com/FGamer112/MyTelega.git && git push https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder}.git -u origin/main --all")
+                refreshing = open("refresh.sh", "w")
+                refreshing.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", f"git commit -m '{message}'\n", "git push -u origin main\n"])
+                refreshing.close()
+                os.system(f"cd {path} && chmod +x refresh.sh && ./refresh.sh")
             #--------------------------------------------------
 
             #OPTION Replace with local repo
@@ -178,14 +182,18 @@ def checkin():
                 response = requests.delete('https://api.github.com/repos/FGamer112/%s'%name_of_folder, headers=headers)
                 print(f"Status-code: {response.status_code}\n")
                 #Uploading
-                print("\nUPLOADING...")
-                headers1 = {
+                print("\nUploading\n")
+                print(NEW_REPO_NAME)
+                headers = {
                             "Authorization": f"token {GH_API_TOKEN}"
-    }
-                data1 = '{"name": "%s", "private": "True"}' % NEW_REPO_NAME
-                response1 = requests.post('https://api.github.com/user/repos', headers=headers1, data=data1)
-                print(f"Status-code: {response1.status_code}\n")
-                os.system("cd "+path+"/"+name_of_folder+f" && git init && git add . && git config remote.origin.url https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder} && git commit -m 'update' && git branch -M main && git push -u origin main && git remote add origin https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder}.git && git push https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder}.git -u origin main")
+                }
+                data = '{"name": "%s", "private": "True"}' % NEW_REPO_NAME
+                response = requests.post('https://api.github.com/user/repos', headers=headers, data=data)
+                print(f"Status-code: {response.status_code}\n")
+                dwnld = open("uploading.sh", "w")
+                dwnld.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'First commit'\n", "git branch -M main\n", "remote add origin git@github:FGamer112/experiment.git\n", "git push -u origin main"])
+                dwnld.close()
+                os.system(f"cd {path} && chmod +x uploading.sh && ./uploading.sh")
             #--------------------------------------------------
 
             #OPTION Delete
@@ -270,6 +278,9 @@ def just_dwnld():
         data = '{"name": "%s", "private": "True"}' % NEW_REPO_NAME
         response = requests.post('https://api.github.com/user/repos', headers=headers, data=data)
         print(f"Status-code: {response.status_code}\n")
-        os.system("cd "+path+"/"+name_of_folder+f" && git init && git add . && git config remote.origin.url https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder} && git commit -m 'update' && git branch -M main && git push -u origin main && git remote add origin https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder}.git && git push https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{name_of_folder}.git -u origin main")
+        dwnld = open("uploading.sh", "w")
+        dwnld.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'First commit'\n", "git branch -M main\n", "remote add origin git@github:FGamer112/experiment.git\n", "git push -u origin main"])
+        dwnld.close()
+        os.system(f"cd {path} && chmod +x uploading.sh && ./uploading.sh")
 #--------------------------------------------------
 start()
