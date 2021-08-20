@@ -5,7 +5,7 @@ from examples import custom_style_2
 import os
 import requests
 import sqlite3
-#IGOR
+
 
 #Prechecking, setting up, creating DB
 con = sqlite3.connect("datas.db")
