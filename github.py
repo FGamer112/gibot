@@ -114,8 +114,16 @@ def github_parse():
         os.system("clear")
         confirming()
         if answers["continue"] == True:
-            print("CLONING...")
-            os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
+            folder_exist_checking = content.index(f"{answer}")
+            if folder_exist_checking >= 0:
+                confirming()
+                if answers["continue"] == True:
+                    os.system(f"rm -rf {answer}")
+                    print("CLONING...")
+                    os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
+            else:
+                print("CLONING...")
+                os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
 
 
 #MAIN MODULE folders parsing and choosing
