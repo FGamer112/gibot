@@ -66,6 +66,20 @@ def confirming():
 ]
     answers = prompt(questions, style=custom_style_2)
     pprint(answers)
+
+def confirming_custom(message: str):
+    global answer
+    global answers
+    questions = [
+    {
+        'type': 'confirm',
+        'message': message,
+        'name': 'continue',
+        'default': True,
+    }
+]
+    answers = prompt(questions, style=custom_style_2)
+    pprint(answers)
 #--------------------------------------------------
 
 #Path and folders
@@ -114,16 +128,27 @@ def github_parse():
         os.system("clear")
         confirming()
         if answers["continue"] == True:
-            folder_exist_checking = content.index(f"{answer}")
-            if folder_exist_checking >= 0:
-                confirming()
-                if answers["continue"] == True:
-                    os.system(f"rm -rf {answer}")
-                    print("CLONING...")
-                    os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
-            else:
+            contlist = []
+            for i, name in enumerate(content):
+                if os.path.isdir(path+"/"+name):
+                    contlist.append(name)
+            try:
+                folder_exist_checking = contlist.index(f"{answer}")
+                if folder_exist_checking >= 0:
+                    confirming_custom("Folder exists, replace with remote?")
+                    if answers["continue"] == True:
+                        os.system(f"rm -rf {answer}")
+                        print("CLONING...")
+                        os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
+                        confirming_custom("Launch?")
+                        if answers["continue"] == True:
+                                os.system(f"cd {path}/{answer} && python3 {answer}.py")
+            except(ValueError):
                 print("CLONING...")
                 os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
+                confirming_custom("Launch?")
+                if answers["continue"] == True:
+                        os.system(f"cd {path}/{answer} && python3 {answer}.py")
 
 
 #MAIN MODULE folders parsing and choosing
@@ -190,12 +215,16 @@ def checkin():
                 response = requests.delete('https://api.github.com/repos/FGamer112/%s'%name_of_folder, headers=headers)
                 print(f"Status-code: {response.status_code}\n")
                 #Uploading
+                confirming_custom("Upload as private?")
+                private = "False"
+                if answers["continue"] == True:
+                    private = "True"
                 print("\nUploading\n")
                 print(NEW_REPO_NAME)
                 headers = {
                             "Authorization": f"token {GH_API_TOKEN}"
                 }
-                data = '{"name": "%s", "private": "True"}' % NEW_REPO_NAME
+                data = '{"name": "%s", "private": "%s"}' % NEW_REPO_NAME, private
                 response = requests.post('https://api.github.com/user/repos', headers=headers, data=data)
                 print(f"Status-code: {response.status_code}\n")
                 dwnld = open("uploading.sh", "w")
@@ -278,12 +307,16 @@ def sett():
 #Uploading only
 def just_dwnld():
         os.system("clear")
+        confirming_custom("Upload as private?")
+        private = "False"
+        if answers["continue"] == True:
+            private = "True"
         print("\nUploading\n")
         print(NEW_REPO_NAME)
         headers = {
                     "Authorization": f"token {GH_API_TOKEN}"
         }
-        data = '{"name": "%s", "private": "True"}' % NEW_REPO_NAME
+        data = '{"name": "%s", "private": "%s"}' % NEW_REPO_NAME, private
         response = requests.post('https://api.github.com/user/repos', headers=headers, data=data)
         print(f"Status-code: {response.status_code}\n")
         dwnld = open("uploading.sh", "w")
