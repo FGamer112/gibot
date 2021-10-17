@@ -315,6 +315,8 @@ def just_dwnld():
         private = "False"
         if answers["continue"] == True:
             private = "True"
+        else:
+            private = "False"
         print("\nUploading\n")
         print(NEW_REPO_NAME)
         headers = {
