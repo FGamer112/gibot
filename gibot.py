@@ -222,15 +222,15 @@ def checkin():
                 confirming_custom("Upload as private?")
 
                 if answers["continue"] == True:
-                    private = "true"
-                else:
                     private = "false"
+                else:
+                    private = "true"
                 print("\nUploading\n")
                 print(NEW_REPO_NAME)
                 headers = {
                             "Authorization": f"token {GH_API_TOKEN}"
                 }
-                data = {"name": f"{NEW_REPO_NAME}", "private": f"{private}"}
+                data = {"name": f"{NEW_REPO_NAME}", "public": f"{private}"}
                 response = requests.post('https://api.github.com/user/repos', headers=headers, json=data)
                 print(f"Status-code: {response.status_code}\n")
                 dwnld = open("uploading.sh", "w")
