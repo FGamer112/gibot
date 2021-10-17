@@ -220,9 +220,11 @@ def checkin():
                 print(f"Status-code: {response.status_code}\n")
                 #Uploading
                 confirming_custom("Upload as private?")
-                private = "False"
+
                 if answers["continue"] == True:
-                    private = "True"
+                    private = "true"
+                else:
+                    private = "false"
                 print("\nUploading\n")
                 print(NEW_REPO_NAME)
                 headers = {
@@ -312,11 +314,10 @@ def sett():
 def just_dwnld():
         os.system("clear")
         confirming_custom("Upload as private?")
-        private = "False"
         if answers["continue"] == True:
-            private = "True"
+            private = "true"
         else:
-            private = "False"
+            private = "false"
         print("\nUploading\n")
         print(NEW_REPO_NAME)
         headers = {
