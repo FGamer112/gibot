@@ -222,15 +222,15 @@ def checkin():
                 confirming_custom("Upload as private?")
 
                 if answers["continue"] == True:
-                    private = "false"
+                    public = "false"
                 else:
-                    private = "true"
+                    public = "true"
                 print("\nUploading\n")
                 print(NEW_REPO_NAME)
                 headers = {
                             "Authorization": f"token {GH_API_TOKEN}"
                 }
-                data = {"name": f"{NEW_REPO_NAME}", "public": f"{private}"}
+                data = {"name": f"{NEW_REPO_NAME}", "public": f"{public}"}
                 response = requests.post('https://api.github.com/user/repos', headers=headers, json=data)
                 print(f"Status-code: {response.status_code}\n")
                 dwnld = open("uploading.sh", "w")
@@ -315,16 +315,16 @@ def just_dwnld():
         os.system("clear")
         confirming_custom("Upload as private?")
         if answers["continue"] == True:
-            private = "true"
+            public = "false"
         else:
-            private = "false"
+            public = "true"
         print("\nUploading\n")
         print(NEW_REPO_NAME)
         headers = {
                     "Authorization": f"token {GH_API_TOKEN}"
         }
-        data = '{"name": "%s", "private": "%s"}' % (NEW_REPO_NAME, private)
-        response = requests.post('https://api.github.com/user/repos', headers=headers, data=data)
+        data = {"name": f"{public}", "public": f"{public}"}
+        response = requests.post('https://api.github.com/user/repos', headers=headers, json=data)
         print(f"Status-code: {response.status_code}\n")
         dwnld = open("uploading.sh", "w")
         dwnld.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'first commit'\n", "git branch -M main\n", f"git remote add origin https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
