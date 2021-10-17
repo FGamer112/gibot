@@ -230,8 +230,8 @@ def checkin():
                 headers = {
                             "Authorization": f"token {GH_API_TOKEN}"
                 }
-                data = '{"name": "%s", "private": "%s"}' % (NEW_REPO_NAME, private)
-                response = requests.post('https://api.github.com/user/repos', headers=headers, data=data)
+                data = {"name": f"{NEW_REPO_NAME}", "private": f"{private}"}
+                response = requests.post('https://api.github.com/user/repos', headers=headers, json=data)
                 print(f"Status-code: {response.status_code}\n")
                 dwnld = open("uploading.sh", "w")
                 dwnld.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'first commit'\n", "git branch -M main\n", f"git remote add origin https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
