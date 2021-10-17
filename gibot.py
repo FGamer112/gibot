@@ -1,5 +1,5 @@
-from __future__ import print_function, unicode_literals
 from pprint import pprint
+from sqlite3.dbapi2 import OperationalError
 from PyInquirer import prompt, Separator
 from examples import custom_style_2
 import os
@@ -10,12 +10,13 @@ import sqlite3
 #Prechecking, setting up, creating DB
 con = sqlite3.connect("datas.db")
 cur = con.cursor()
-cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
-if str(cur.fetchall()) != "[('saves',)]":
+try:
     cur.execute("""CREATE TABLE saves
                     (username text, email text, api_token text, auto text)""")
     cur.execute("""INSERT INTO saves VALUES ('your username', 'your email', 'your api', 'useless, just ignore')""")
     con.commit()
+except(OperationalError):
+    pass
 #--------------------------------------------------
 
 #Data base
@@ -83,7 +84,7 @@ def confirming_custom(message: str):
 #--------------------------------------------------
 
 #Path and folders
-path = os.path.dirname(__file__)
+path = os.path.abspath(os.path.dirname(__file__))
 content = os.listdir(str(path+"/"))
 contlist = []
 #--------------------------------------------------
@@ -137,9 +138,12 @@ def github_parse():
                 if folder_exist_checking >= 0:
                     confirming_custom("Folder exists, replace with remote?")
                     if answers["continue"] == True:
+                        os.system(f"cd {path}/ && mkdir 1i3u9h8709e")
+
                         os.system(f"rm -rf {answer}")
                         print("CLONING...")
-                        os.system(f"cd "+path+"/"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
+                        os.system(f"cd "+path+"/1i3u9h8709e"+f" && git clone https://{GH_USER}:{GH_API_TOKEN}@github.com/{GH_USER}/{answer}")
+                        os.system(f"\cp -r {path}/1i3u9h8709e {path}/{answer} && rm -rf {path}/1i3u9h8709e")
                         confirming_custom("Launch?")
                         if answers["continue"] == True:
                                 os.system(f"cd {path}/{answer} && python3 {answer}.py")
@@ -224,7 +228,7 @@ def checkin():
                 headers = {
                             "Authorization": f"token {GH_API_TOKEN}"
                 }
-                data = '{"name": "%s", "private": "%s"}' % NEW_REPO_NAME, private
+                data = '{"name": "%s", "private": "%s"}' % (NEW_REPO_NAME, private)
                 response = requests.post('https://api.github.com/user/repos', headers=headers, data=data)
                 print(f"Status-code: {response.status_code}\n")
                 dwnld = open("uploading.sh", "w")
@@ -316,7 +320,7 @@ def just_dwnld():
         headers = {
                     "Authorization": f"token {GH_API_TOKEN}"
         }
-        data = '{"name": "%s", "private": "%s"}' % NEW_REPO_NAME, private
+        data = '{"name": "%s", "private": "%s"}' % (NEW_REPO_NAME, private)
         response = requests.post('https://api.github.com/user/repos', headers=headers, data=data)
         print(f"Status-code: {response.status_code}\n")
         dwnld = open("uploading.sh", "w")
