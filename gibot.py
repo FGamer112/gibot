@@ -12,7 +12,7 @@ cur = con.cursor()
 try:
     cur.execute("""CREATE TABLE saves
                     (username text, email text, api_token text)""")
-    cur.execute("""INSERT INTO saves VALUES ('your username', 'your email', 'your api')""")
+    cur.execute("""INSERT INTO saves VALUES ('your username', 'your email', 'api')""")
     con.commit()
 except(OperationalError):
     pass
@@ -31,7 +31,6 @@ repos = []
 NEW_REPO_NAME = ""
 name_of_folder = ""
 result = ""
-api_for_print = api_from_db[0:4]+("*"*32)+api_from_db[36:40]
 def menu(type_of, name, message, choises):
     questions = [{
         "type": f"{type_of}",
@@ -234,7 +233,7 @@ def settings():
         global api_from_db
         user_from_db = str(cur.execute("""SELECT username FROM saves""").fetchall()[0][0])
         email_from_db = str(cur.execute("""SELECT email FROM saves""").fetchall()[0][0])
-        api_from_db = str(cur.execute("""SELECT api_token FROM saves""").fetchall()[0][0])
+        api_for_print = api_from_db[0:4]+("*"*32)+api_from_db[36:40]
         print(f"Username: {user_from_db}\nEmail: {email_from_db}\nApi: {api_for_print}\n")
         menu("list", "settings", "", [
                     {'name':'Username'},
