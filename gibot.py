@@ -1,6 +1,5 @@
 from sqlite3.dbapi2 import OperationalError
 from PyInquirer import prompt, Separator
-from examples import custom_style_2
 import os
 import requests
 import sqlite3
@@ -39,7 +38,7 @@ def menu(type_of, name, message, choises):
         "choices": choises
     }]
     global result
-    result = prompt(questions, style=custom_style_2)[f"{name}"]
+    result = prompt(questions)[f"{name}"]
 
 def confirming(message, name):
     questions = [
@@ -51,7 +50,7 @@ def confirming(message, name):
     }
 ]
     global result
-    result = prompt(questions, style=custom_style_2)[f"{name}"]
+    result = prompt(questions)[f"{name}"]
 #--------------------------------------------------
 
 #Path and folders
