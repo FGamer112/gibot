@@ -159,7 +159,7 @@ def local():
                 response = requests.patch(f'https://api.github.com/repos/FGamer112/{name_of_folder}', headers=headers, data=data, auth=(f"{user_from_db}", f"{api_from_db}"))
                 print(f"Status-code: {response.status_code}\n")
                 refreshing = open("refresh.sh", "w")
-                refreshing.writelines(["#!/bin/bash\n", f"cd {path_alt}/{name_of_folder}\n", "git init\n", "git add .\n", f"git commit -m '{message}'\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
+                refreshing.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", f"git commit -m '{message}'\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
                 refreshing.close()
                 os.system(f"cd {path_alt} && chmod +x refresh.sh && ./refresh.sh && rm -rf refresh.sh")
             #--------------------------------------------------
@@ -188,7 +188,7 @@ def local():
                 response = requests.post('https://api.github.com/user/repos', headers=headers, json=data)
                 print(f"Status-code: {response.status_code}\n")
                 dwnld = open("uploading.sh", "w")
-                dwnld.writelines(["#!/bin/bash\n", f"cd {path_alt}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'first commit'\n", "git branch -M main\n", f"git remote add origin https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
+                dwnld.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'first commit'\n", "git branch -M main\n", f"git remote add origin https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
                 dwnld.close()
                 os.system(f"cd {path_alt} && chmod +x uploading.sh && ./uploading.sh && rm -rf uploading.sh")
             #--------------------------------------------------
@@ -218,7 +218,7 @@ def local():
             response = requests.post('https://api.github.com/user/repos', headers=headers, json=data)
             print(f"Status-code: {response.status_code}\n")
             dwnld = open("uploading.sh", "w")
-            dwnld.writelines(["#!/bin/bash\n", f"cd {path_alt}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'first commit'\n", "git branch -M main\n", f"git remote add origin https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
+            dwnld.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'first commit'\n", "git branch -M main\n", f"git remote add origin https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
             dwnld.close()
             os.system(f"cd {path_alt} && chmod +x uploading.sh && ./uploading.sh && rm -rf uploading.sh")
 #--------------------------------------------------
