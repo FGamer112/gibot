@@ -1,6 +1,6 @@
 #!/bin/bash
-cd /home/agentk/gitprojects/gibot/gibot
+cd /home/agentk/gitprojects/gibot/voc
 git init
 git add .
-git commit -m 'Bug fixes'
-git push https://FGamer112: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@github.com/FGamer112/gibot.git main
+git commit -m 'y'
+git push https://FGamer112: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@github.com/FGamer112/voc.git main
