@@ -3,6 +3,7 @@ from PyInquirer import prompt, Separator
 import os
 import requests
 import sqlite3
+from pathlib import Path
 
 
 #Prechecking, setting up, creating DB
@@ -54,8 +55,9 @@ def confirming(message, name):
 #--------------------------------------------------
 
 #Path and folders
-path = os.path.abspath(os.path.dirname(__file__))
-content = os.listdir(str(path+"/"))
+path = Path(os.path.abspath(os.path.dirname(__file__))).parent
+path_alt = os.path.abspath(os.path.dirname(__file__))
+content = os.listdir(str(f'{path}/'))
 contlist = []
 #--------------------------------------------------
 
@@ -100,7 +102,7 @@ def github():
         if result == True:
             contlist = []
             for i, name in enumerate(content):
-                if os.path.isdir(path+"/"+name):
+                if os.path.isdir(f'{path}/'):
                     contlist.append(name)
             contlist.sort(key=str)
             try:
@@ -110,27 +112,27 @@ def github():
                     if result == True:
                         import random
                         salt = random.randint(1000000, 9999999)
-                        os.system(f"cd {path}/ && mkdir temp{salt}")
+                        os.system(f"cd {path_alt}/ && mkdir temp{salt}")
                         os.system(f"rm -rf {name_of_folder}")
                         print("CLONING...")
-                        os.system(f"cd {path}/temp{salt} && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
+                        os.system(f"cd {path_alt}/temp{salt} && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
                         os.system(f"\cp -r {path}/temp{salt}/{name_of_folder} {path}/ && rm -rf {path}/temp{salt}")
                         confirming("Launch?", "launch")
                         if result == True:
-                                os.system(f"cd {path}/{name_of_folder} && python3 {name_of_folder}.py")
+                                os.system(f"cd {path_alt}/{name_of_folder} && python3 {name_of_folder}.py")
             except(ValueError):
                 print("CLONING...")
-                os.system(f"cd {path}/ && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
+                os.system(f"cd {path_alt}/ && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
                 confirming("Launch?", "launch")
                 if result == True:
-                        os.system(f"cd {path}/{name_of_folder} && python3 {name_of_folder}.py")
+                        os.system(f"cd {path_alt}/{name_of_folder} && python3 {name_of_folder}.py")
 
 
 #MAIN MODULE folders parsing and choosing
 def local():
     contlist = []
     for i, name in enumerate(content):
-        if os.path.isdir(path+"/"+name):
+        if os.path.isdir(f'{path}/'):
             contlist.append(name)
     contlist.sort(key=str)
     contlist.append(Separator())
@@ -159,9 +161,9 @@ def local():
                 response = requests.patch(f'https://api.github.com/repos/FGamer112/{name_of_folder}', headers=headers, data=data, auth=(f"{user_from_db}", f"{api_from_db}"))
                 print(f"Status-code: {response.status_code}\n")
                 refreshing = open("refresh.sh", "w")
-                refreshing.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", f"git commit -m '{message}'\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
+                refreshing.writelines(["#!/bin/bash\n", f"cd {path_alt}/{name_of_folder}\n", "git init\n", "git add .\n", f"git commit -m '{message}'\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
                 refreshing.close()
-                os.system(f"cd {path} && chmod +x refresh.sh && ./refresh.sh && rm -rf refresh.sh")
+                os.system(f"cd {path_alt} && chmod +x refresh.sh && ./refresh.sh && rm -rf refresh.sh")
             #--------------------------------------------------
 
             #OPTION Replace with local repo
@@ -188,9 +190,9 @@ def local():
                 response = requests.post('https://api.github.com/user/repos', headers=headers, json=data)
                 print(f"Status-code: {response.status_code}\n")
                 dwnld = open("uploading.sh", "w")
-                dwnld.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'first commit'\n", "git branch -M main\n", f"git remote add origin https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
+                dwnld.writelines(["#!/bin/bash\n", f"cd {path_alt}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'first commit'\n", "git branch -M main\n", f"git remote add origin https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
                 dwnld.close()
-                os.system(f"cd {path} && chmod +x uploading.sh && ./uploading.sh && rm -rf uploading.sh")
+                os.system(f"cd {path_alt} && chmod +x uploading.sh && ./uploading.sh && rm -rf uploading.sh")
             #--------------------------------------------------
 
             #OPTION Delete
@@ -218,9 +220,9 @@ def local():
             response = requests.post('https://api.github.com/user/repos', headers=headers, json=data)
             print(f"Status-code: {response.status_code}\n")
             dwnld = open("uploading.sh", "w")
-            dwnld.writelines(["#!/bin/bash\n", f"cd {path}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'first commit'\n", "git branch -M main\n", f"git remote add origin https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
+            dwnld.writelines(["#!/bin/bash\n", f"cd {path_alt}/{name_of_folder}\n", "git init\n", "git add .\n", "git commit -m 'first commit'\n", "git branch -M main\n", f"git remote add origin https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git\n", f"git push https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}.git main\n"])
             dwnld.close()
-            os.system(f"cd {path} && chmod +x uploading.sh && ./uploading.sh && rm -rf uploading.sh")
+            os.system(f"cd {path_alt} && chmod +x uploading.sh && ./uploading.sh && rm -rf uploading.sh")
 #--------------------------------------------------
 
 
