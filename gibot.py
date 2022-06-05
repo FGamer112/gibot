@@ -1,10 +1,9 @@
 from sqlite3.dbapi2 import OperationalError
-from PyInquirer import prompt, Separator
 import os
 import requests
 import sqlite3
 from pathlib import Path
-
+from PyInquirer import prompt, Separator
 
 #Prechecking, setting up, creating DB
 con = sqlite3.connect("datas.db")
@@ -25,12 +24,12 @@ api_from_db = str(cur.execute("""SELECT api_token FROM saves""").fetchall()[0][0
 
 #Starting
 repos = []
-#--------------------------------------------------
+#-------------------------------------------------
 
 #Main vars
 NEW_REPO_NAME = ""
 name_of_folder = ""
-result = ""
+
 def menu(type_of, name, message, choises):
     questions = [{
         "type": f"{type_of}",
@@ -38,8 +37,8 @@ def menu(type_of, name, message, choises):
         "message": f"{message}",
         "choices": choises
     }]
-    global result
-    result = prompt(questions)[f"{name}"]
+    return prompt(questions)[f"{name}"]
+    
 
 def confirming(message, name):
     questions = [
@@ -50,8 +49,7 @@ def confirming(message, name):
         'default': True,
     }
 ]
-    global result
-    result = prompt(questions)[f"{name}"]
+    return prompt(questions)[f"{name}"]
 #--------------------------------------------------
 
 #Path and folders
@@ -70,7 +68,7 @@ os.system("clear")
 #Starting
 def start():
     os.system("clear")
-    menu("list", "start", "", ["Local", "Github", "Settings"])
+    result = menu("list", "start", "", ["Local", "Github", "Settings"])
     if result == "Settings":
         settings()
     elif result == "Github":
@@ -91,10 +89,10 @@ def github():
     repos.sort(key=str)
     repos.append(Separator())
     repos.append("Back")
-    menu("list", "start", "Choose your repo", repos)
+    result = menu("list", "start", "Choose your repo", repos)
     global name_of_folder
     name_of_folder = result
-    if result == "Back":
+    if result == "Back" or result == "Backspace":
         start()
     else:
         os.system("clear")
@@ -135,10 +133,10 @@ def local():
     contlist.sort(key=str)
     contlist.append(Separator())
     contlist.append("Back")
-    menu("list", "ch", "Choose folder", contlist)
+    result = menu("list", "ch", "Choose folder", contlist)
     global name_of_folder
     name_of_folder = result
-    if result == "Back":
+    if result == "Back" or result == "Backspace":
         start()
     else: 
         os.system("clear")
@@ -234,7 +232,7 @@ def settings():
         email_from_db = str(cur.execute("""SELECT email FROM saves""").fetchall()[0][0])
         api_for_print = api_from_db[0:4]+("*"*32)+api_from_db[36:40]
         print(f"Username: {user_from_db}\nEmail: {email_from_db}\nApi: {api_for_print}\n")
-        menu("list", "settings", "", [
+        result = menu("list", "settings", "", [
                     {'name':'Username'},
                     {'name':'Email'},
                     {'name':'API-token'},
@@ -258,7 +256,7 @@ def settings():
             con.commit()
             api_from_db = api
             settings()
-        elif result == "Back":
+        elif result == "Back" or result == "Backspace":
             start()
 #--------------------------------------------------
 

@@ -79,7 +79,7 @@ class InquirerControl(TokenListControl):
                 # bind option with this index to mouse event
                 self.selected_option_index = index
                 self.answered = True
-                cli.set_return_value(mouse_event)
+                cli.set_return_value(None)
 
             tokens.append((T.Pointer if selected else T, ' \u276f ' if selected
             else '   '))
@@ -147,9 +147,14 @@ def question(message, **kwargs):
 
     @manager.registry.add_binding(Keys.ControlQ, eager=True)
     @manager.registry.add_binding(Keys.ControlC, eager=True)
+    @manager.registry.add_binding(Keys.Escape, eager=True)
     def _(event):
         raise KeyboardInterrupt()
         # event.cli.set_return_value(None)
+    
+    @manager.registry.add_binding(Keys.Backspace, eager=True)
+    def backspace(event):
+        event.cli.set_return_value("Backspace")
 
     @manager.registry.add_binding(Keys.Down, eager=True)
     def move_cursor_down(event):
@@ -179,6 +184,6 @@ def question(message, **kwargs):
     return Application(
         layout=layout,
         key_bindings_registry=manager.registry,
-        mouse_support=True,
+        mouse_support=False,
         style=style
     )
