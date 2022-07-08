@@ -96,7 +96,7 @@ def github():
         start()
     else:
         os.system("clear")
-        confirming(result, "repo")
+        result = confirming(result, "repo")
         if result == True:
             contlist = []
             for i, name in enumerate(content):
@@ -108,7 +108,7 @@ def github():
                 us = open("test1.txt", "w")
                 us.write(f"{folder_exist_checking}")
                 us.close()
-                confirming("Folder exists, replace with remote?", "replace")
+                result = confirming("Folder exists, replace with remote?", "replace")
                 if result == True:
                     os.system(f"rm -rf {path}/{name_of_folder}")
                     print("CLONING...")
@@ -119,7 +119,7 @@ def github():
             except(ValueError):
                 print("CLONING...")
                 os.system(f"cd {path}/ && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
-                confirming("Launch?", "launch")
+                result = confirming("Launch?", "launch")
                 if result == True:
                         os.system(f"cd {path}/{name_of_folder} && python3 {name_of_folder}.py")
 
@@ -145,7 +145,7 @@ def local():
         }
         response = str(requests.get('https://api.github.com/user/repos', headers=headers).json()).count(f"{name_of_folder}")
         if response >= 1:
-            menu("list", "ch", "The repository exists", ["Refresh", "Replace with local", "Delete"])
+            result = menu("list", "ch", "The repository exists", ["Refresh", "Replace with local", "Delete"])
             #OPTION refresh
             if result == "Refresh":
                 message = str(input("Commit message: "))
@@ -172,7 +172,7 @@ def local():
                 response = requests.delete(f'https://api.github.com/repos/FGamer112/{name_of_folder}', headers=headers)
                 print(f"Status-code: {response.status_code}\n")
                 #Uploading
-                confirming("Upload as private?", "private")
+                result = confirming("Upload as private?", "private")
                 if result == True:
                     public = "false"
                 else:
@@ -202,7 +202,7 @@ def local():
             #--------------------------------------------------
         else:
             os.system("clear")
-            confirming("Upload as private?", "private")
+            result = confirming("Upload as private?", "private")
             if result == True:
                 public = "false"
             else:
