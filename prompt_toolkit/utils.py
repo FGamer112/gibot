@@ -6,7 +6,12 @@ import sys
 import threading
 import weakref
 
-from wcwidth import wcwidth
+try:
+    from wcwidth import wcwidth
+except:
+    import subprocess
+    subprocess.Popen(["python3.9", "-m", "pip", "install", "wcwidth"]).wait()
+    from wcwidth import wcwidth
 from six.moves import range
 
 

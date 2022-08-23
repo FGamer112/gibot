@@ -4,7 +4,12 @@ import json
 import sys
 from pprint import pprint
 
-from pygments import highlight, lexers, formatters
+try:
+    from pygments import highlight, lexers, formatters
+except:
+    import subprocess
+    subprocess.Popen(["python3.9", "-m", "pip", "install", "pygments"]).wait()
+    from pygments import highlight, lexers, formatters
 
 __version__ = '0.1.2'
 

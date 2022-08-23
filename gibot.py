@@ -17,11 +17,6 @@ except(OperationalError):
     pass
 #--------------------------------------------------
 
-#DB
-user_from_db = str(cur.execute("""SELECT username FROM saves""").fetchall()[0][0])
-email_from_db = str(cur.execute("""SELECT email FROM saves""").fetchall()[0][0])
-api_from_db = str(cur.execute("""SELECT api_token FROM saves""").fetchall()[0][0])
-
 #Starting
 repos = []
 #-------------------------------------------------
@@ -52,17 +47,26 @@ def confirming(message, name):
     return prompt(questions)[f"{name}"]
 #--------------------------------------------------
 
+#Refreshing data
+def refresh(user = "user", email = "email", api = "api"):
+    if user == "user":
+        return str(cur.execute("""SELECT username FROM saves""").fetchall()[0][0])
+    elif email == "email":
+        return str(cur.execute("""SELECT email FROM saves""").fetchall()[0][0])
+    elif api == "api":
+        return str(cur.execute("""SELECT api_token FROM saves""").fetchall()[0][0])
+    user_from_db = str(cur.execute("""SELECT username FROM saves""").fetchall()[0][0])
+    email_from_db = str(cur.execute("""SELECT email FROM saves""").fetchall()[0][0])
+    os.system(f"git config --global user.name {user_from_db}")
+    os.system(f"git config --global user.email {email_from_db}")
+    os.system("clear")
+#--------------------------------------------------
+
 #Path and folders
 path = Path(os.path.abspath(os.path.dirname(__file__))).parent
 path_alt = os.path.abspath(os.path.dirname(__file__))
 content = os.listdir(str(f'{path}/'))
-contlist = []
 #--------------------------------------------------
-
-
-os.system(f"git config --global user.name {user_from_db}")
-os.system(f"git config --global user.email {email_from_db}")
-os.system("clear")
 
 
 #Starting
@@ -78,8 +82,8 @@ def start():
 
 #Parsing from Github and uploading
 def github():
-    os.system("clear")
-    repos = []
+    user_from_db = refresh(user="user")
+    api_from_db = refresh(api="api")
     headers = {
                     "Authorization": f"token {api_from_db}"
             }
@@ -90,7 +94,6 @@ def github():
     repos.append(Separator())
     repos.append("Back")
     result = menu("list", "start", "Choose your repo", repos)
-    global name_of_folder
     name_of_folder = result
     if result == "Back" or result == "Backspace":
         start()
@@ -103,11 +106,7 @@ def github():
                 if os.path.isdir(f'{path}/'):
                     contlist.append(name)
             contlist.sort(key=str)
-            try:
-                folder_exist_checking = contlist.index(f"{name_of_folder}")
-                us = open("test1.txt", "w")
-                us.write(f"{folder_exist_checking}")
-                us.close()
+            if Path.is_dir(f"{path}/{result}") == True:
                 result = confirming("Folder exists, replace with remote?", "replace")
                 if result == True:
                     os.system(f"rm -rf {path}/{name_of_folder}")
@@ -116,16 +115,18 @@ def github():
                     confirming("Launch?", "launch")
                     if result == True:
                             os.system(f"cd {path}/{name_of_folder} && python3 {name_of_folder}.py")
-            except(ValueError):
-                print("CLONING...")
-                os.system(f"cd {path}/ && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
-                result = confirming("Launch?", "launch")
-                if result == True:
-                        os.system(f"cd {path}/{name_of_folder} && python3 {name_of_folder}.py")
+                else:
+                    print("CLONING...")
+                    os.system(f"cd {path}/ && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
+                    result = confirming("Launch?", "launch")
+                    if result == True:
+                            os.system(f"cd {path}/{name_of_folder} && python3 {name_of_folder}.py")
 
 
 #MAIN MODULE folders parsing and choosing
 def local():
+    user_from_db = refresh(user="user")
+    api_from_db = refresh(api="api")
     contlist = []
     for i, name in enumerate(content):
         if os.path.isdir(f'{path}/'):
@@ -134,7 +135,6 @@ def local():
     contlist.append(Separator())
     contlist.append("Back")
     result = menu("list", "ch", "Choose folder", contlist)
-    global name_of_folder
     name_of_folder = result
     if result == "Back" or result == "Backspace":
         start()
@@ -225,37 +225,52 @@ def local():
 #Settings
 def settings():
         os.system("clear")
-        global user_from_db
-        global email_from_db
-        global api_from_db
         user_from_db = str(cur.execute("""SELECT username FROM saves""").fetchall()[0][0])
         email_from_db = str(cur.execute("""SELECT email FROM saves""").fetchall()[0][0])
+        api_from_db = refresh(api="api")
         api_for_print = api_from_db[0:4]+("*"*32)+api_from_db[36:40]
         print(f"Username: {user_from_db}\nEmail: {email_from_db}\nApi: {api_for_print}\n")
         result = menu("list", "settings", "", [
                     {'name':'Username'},
                     {'name':'Email'},
                     {'name':'API-token'},
+                    {'name':'Install pip packages'},
                     {'name':'Back'}
                 ])
         if result == "Username":
             user = str(input("Enter username: "))
             cur.execute(f"UPDATE saves SET username = '{user}'")
             con.commit()
-            user_from_db = user
             settings()
         elif result == "Email":
             email = str(input("Enter Email: "))
             cur.execute(f"UPDATE saves SET email = '{email}'")
             con.commit()
-            email_from_db = email
             settings()
         elif result == "API-token":
             api = str(input("Enter API-token: "))
             cur.execute(f"UPDATE saves SET api_token = '{api}'")
             con.commit()
-            api_from_db = api
             settings()
+        elif result == "Install pip packages":
+            from sutils import get_work_env
+            result = menu("list", "environ", "Choose your environment", [
+                {"name": "All"},
+                {"name": "Telegram"},
+                {"name": "Stuff"},
+                {"name": "Back"}
+            ])
+            if result == "All":
+                get_work_env("all")
+                settings()
+            elif result == "Telegram":
+                get_work_env("telegram")
+                settings()
+            elif result == "Stuff":
+                get_work_env("stuff")
+                settings()
+            elif result == "Back" or result == "Backspace":
+                settings()
         elif result == "Back" or result == "Backspace":
             start()
 #--------------------------------------------------
