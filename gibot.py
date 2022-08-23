@@ -4,6 +4,9 @@ import requests
 import sqlite3
 from pathlib import Path
 from PyInquirer import prompt, Separator
+from sutils import get_python_version
+
+
 
 #Prechecking, setting up, creating DB
 con = sqlite3.connect("datas.db")
@@ -84,6 +87,7 @@ def start():
 def github():
     user_from_db = refresh("user")
     api_from_db = refresh("api")
+    python_cmd = get_python_version("str")
     headers = {
                     "Authorization": f"token {api_from_db}"
             }
@@ -101,12 +105,7 @@ def github():
         os.system("clear")
         result = confirming(result, "repo")
         if result == True:
-            contlist = []
-            for i, name in enumerate(content):
-                if os.path.isdir(f'{path}/'):
-                    contlist.append(name)
-            contlist.sort(key=str)
-            if Path.is_dir(f"{path}/{result}") == True:
+            if os.path.exists(f"{path}/{result}"):
                 result = confirming("Folder exists, replace with remote?", "replace")
                 if result == True:
                     os.system(f"rm -rf {path}/{name_of_folder}")
@@ -114,13 +113,13 @@ def github():
                     os.system(f"cd {path} && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
                     confirming("Launch?", "launch")
                     if result == True:
-                            os.system(f"cd {path}/{name_of_folder} && python3 {name_of_folder}.py")
-                else:
-                    print("CLONING...")
-                    os.system(f"cd {path}/ && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
-                    result = confirming("Launch?", "launch")
-                    if result == True:
-                            os.system(f"cd {path}/{name_of_folder} && python3 {name_of_folder}.py")
+                            os.system(f"cd {path}/{name_of_folder} && {python_cmd} {name_of_folder}.py")
+            else:
+                print("CLONING...")
+                os.system(f"cd {path}/ && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
+                result = confirming("Launch?", "launch")
+                if result == True:
+                    os.system(f"cd {path}/{name_of_folder} && {python_cmd} {name_of_folder}.py")
 
 
 #MAIN MODULE folders parsing and choosing
