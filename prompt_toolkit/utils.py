@@ -1,18 +1,16 @@
 from __future__ import unicode_literals
-import inspect
-import os
-import signal
-import sys
-import threading
-import weakref
+from sutils import universal_import
 
 try:
+    import inspect
+    import os
+    import signal
+    import sys
+    import threading
+    import weakref
     from wcwidth import wcwidth
-except:
-    import subprocess
-    subprocess.Popen(["python3.9", "-m", "pip", "install", "wcwidth"]).wait()
-    from wcwidth import wcwidth
-from six.moves import range
+except ModuleNotFoundError as err:
+    universal_import(err.name)
 
 
 __all__ = (

@@ -19,6 +19,29 @@ def get_python_version(result: str):
     else:
         return float(res.split(".")[0]+"."+res.split(".")[1])
 
+def get_installed_python3():
+    versions = []
+    i = 5
+    while i <=10:
+        try:
+            subprocess.Popen([f"python3.{i}", "-V"]).wait()
+            versions.append(f"python3.{i}")
+            i+=1
+        except:
+            pass
+            i+=1
+    return versions
+
+def universal_import(value):
+    if type(value) is str:
+        for item in get_installed_python3():
+            print(item)
+            subprocess.Popen([item, "-m", "pip", "install", value]).wait()
+    elif type(value) is list:
+        for item in get_installed_python3():
+            for item1 in value:
+                subprocess.Popen([item, "-m", "pip", "install", item1]).wait()
+
 
 def get_work_env(env: str):
     """

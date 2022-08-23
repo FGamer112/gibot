@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-import json
-import sys
-from pprint import pprint
-
+from sutils import universal_import
 try:
+    import json
+    import sys
+    from pprint import pprint
     from pygments import highlight, lexers, formatters
-except:
-    import subprocess
-    subprocess.Popen(["python3.9", "-m", "pip", "install", "pygments"]).wait()
-    from pygments import highlight, lexers, formatters
+except ModuleNotFoundError as err :
+    universal_import(err.name)
+
+    
 
 __version__ = '0.1.2'
 
