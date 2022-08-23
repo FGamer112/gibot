@@ -14,8 +14,10 @@ def get_work_env(env = "telegram, stuff or all"):
     telegram_bots = ["aiogram", "telethon", "aiohttp"]
     stuff_utils = ["bs4", "XlsxWriter", "colorama"]
     if env == "all":
-            subprocess.Popen(["python3.9", "-m", "pip", "install", telegram_bots]).wait()
-            subprocess.Popen(["python3.9", "-m", "pip", "install", stuff_utils]).wait()
+        for item in telegram_bots:
+            subprocess.Popen(["python3.9", "-m", "pip", "install", item]).wait()
+        for item in stuff_utils:
+            subprocess.Popen(["python3.9", "-m", "pip", "install", item]).wait()
     if env == "telegram":
         for item in telegram_bots:
             subprocess.Popen(["python3.9", "-m", "pip", "install", item]).wait()

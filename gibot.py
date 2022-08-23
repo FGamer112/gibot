@@ -48,12 +48,12 @@ def confirming(message, name):
 #--------------------------------------------------
 
 #Refreshing data
-def refresh(user = "user", email = "email", api = "api"):
-    if user == "user":
+def refresh(item = "user, email or api"):
+    if item == "user":
         return str(cur.execute("""SELECT username FROM saves""").fetchall()[0][0])
-    elif email == "email":
+    elif item == "email":
         return str(cur.execute("""SELECT email FROM saves""").fetchall()[0][0])
-    elif api == "api":
+    elif item == "api":
         return str(cur.execute("""SELECT api_token FROM saves""").fetchall()[0][0])
     user_from_db = str(cur.execute("""SELECT username FROM saves""").fetchall()[0][0])
     email_from_db = str(cur.execute("""SELECT email FROM saves""").fetchall()[0][0])
@@ -82,8 +82,8 @@ def start():
 
 #Parsing from Github and uploading
 def github():
-    user_from_db = refresh(user="user")
-    api_from_db = refresh(api="api")
+    user_from_db = refresh("user")
+    api_from_db = refresh("api")
     headers = {
                     "Authorization": f"token {api_from_db}"
             }
@@ -125,8 +125,8 @@ def github():
 
 #MAIN MODULE folders parsing and choosing
 def local():
-    user_from_db = refresh(user="user")
-    api_from_db = refresh(api="api")
+    user_from_db = refresh("user")
+    api_from_db = refresh("api")
     contlist = []
     for i, name in enumerate(content):
         if os.path.isdir(f'{path}/'):
@@ -225,9 +225,9 @@ def local():
 #Settings
 def settings():
         os.system("clear")
-        user_from_db = str(cur.execute("""SELECT username FROM saves""").fetchall()[0][0])
-        email_from_db = str(cur.execute("""SELECT email FROM saves""").fetchall()[0][0])
-        api_from_db = refresh(api="api")
+        user_from_db = refresh("user")
+        email_from_db = refresh("email")
+        api_from_db = refresh("api")
         api_for_print = api_from_db[0:4]+("*"*32)+api_from_db[36:40]
         print(f"Username: {user_from_db}\nEmail: {email_from_db}\nApi: {api_for_print}\n")
         result = menu("list", "settings", "", [
