@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-from sutils import universal_import
-try:
-    import json
-    import sys
-    from pprint import pprint
-    from pygments import highlight, lexers, formatters
-except ModuleNotFoundError as err :
-    universal_import(err.name)
+
+
+import json
+import sys
+from pprint import pprint
+from pygments import highlight, lexers, formatters
+
 
     
 

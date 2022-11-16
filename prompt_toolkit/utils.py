@@ -1,16 +1,13 @@
 from __future__ import unicode_literals
-from sutils import universal_import
 
-try:
-    import inspect
-    import os
-    import signal
-    import sys
-    import threading
-    import weakref
-    from wcwidth import wcwidth
-except ModuleNotFoundError as err:
-    universal_import(err.name)
+import inspect
+import os
+import signal
+import sys
+import threading
+import weakref
+from wcwidth import wcwidth
+
 
 
 __all__ = (

@@ -3,9 +3,8 @@ import os
 import requests
 import sqlite3
 from pathlib import Path
-from PyInquirer import prompt, Separator
-from sutils import get_python_version
-
+import startup_utils
+from UI import UI
 
 
 #Prechecking, setting up, creating DB
@@ -27,27 +26,6 @@ repos = []
 #Main vars
 NEW_REPO_NAME = ""
 name_of_folder = ""
-
-def menu(type_of, name, message, choises):
-    questions = [{
-        "type": f"{type_of}",
-        "name": f"{name}",
-        "message": f"{message}",
-        "choices": choises
-    }]
-    return prompt(questions)[f"{name}"]
-    
-
-def confirming(message, name):
-    questions = [
-    {
-        'type': 'confirm',
-        'message': message,
-        'name': f'{name}',
-        'default': True,
-    }
-]
-    return prompt(questions)[f"{name}"]
 #--------------------------------------------------
 
 #Refreshing data
@@ -75,7 +53,7 @@ content = os.listdir(str(f'{path}/'))
 #Starting
 def start():
     os.system("clear")
-    result = menu("list", "start", "", ["Local", "Github", "Settings"])
+    result = UI.menu("list", "start", "", ["Local", "Github", "Settings"])
     if result == "Settings":
         settings()
     elif result == "Github":
@@ -87,7 +65,7 @@ def start():
 def github():
     user_from_db = refresh("user")
     api_from_db = refresh("api")
-    python_cmd = get_python_version("str")
+    python_cmd = startup_utils.Python.get_python_version("str")
     headers = {
                     "Authorization": f"token {api_from_db}"
             }
@@ -95,29 +73,29 @@ def github():
     for dict in response:
         repos.append(dict["name"])
     repos.sort(key=str)
-    repos.append(Separator())
+    repos.append(UI.separator())
     repos.append("Back")
-    result = menu("list", "start", "Choose your repo", repos)
+    result = UI.menu("list", "start", "Choose your repo", repos)
     name_of_folder = result
     if result == "Back" or result == "Backspace":
         start()
     else:
         os.system("clear")
-        result = confirming(result, "repo")
+        result = UI.confirming(result, "repo")
         if result == True:
             if os.path.exists(f"{path}/{result}"):
-                result = confirming("Folder exists, replace with remote?", "replace")
+                result = UI.confirming("Folder exists, replace with remote?", "replace")
                 if result == True:
                     os.system(f"rm -rf {path}/{name_of_folder}")
                     print("CLONING...")
                     os.system(f"cd {path} && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
-                    confirming("Launch?", "launch")
+                    UI.confirming("Launch?", "launch")
                     if result == True:
                             os.system(f"cd {path}/{name_of_folder} && {python_cmd} {name_of_folder}.py")
             else:
                 print("CLONING...")
                 os.system(f"cd {path}/ && git clone https://{user_from_db}:{api_from_db}@github.com/{user_from_db}/{name_of_folder}")
-                result = confirming("Launch?", "launch")
+                result = UI.confirming("Launch?", "launch")
                 if result == True:
                     os.system(f"cd {path}/{name_of_folder} && {python_cmd} {name_of_folder}.py")
 
@@ -131,9 +109,9 @@ def local():
         if os.path.isdir(f'{path}/'):
             contlist.append(name)
     contlist.sort(key=str)
-    contlist.append(Separator())
+    contlist.append(UI.separator)
     contlist.append("Back")
-    result = menu("list", "ch", "Choose folder", contlist)
+    result = UI.menu("list", "ch", "Choose folder", contlist)
     name_of_folder = result
     if result == "Back" or result == "Backspace":
         start()
@@ -144,7 +122,7 @@ def local():
         }
         response = str(requests.get('https://api.github.com/user/repos', headers=headers).json()).count(f"{name_of_folder}")
         if response >= 1:
-            result = menu("list", "ch", "The repository exists", ["Refresh", "Replace with local", "Delete"])
+            result = UI.menu("list", "ch", "The repository exists", ["Refresh", "Replace with local", "Delete"])
             #OPTION refresh
             if result == "Refresh":
                 message = str(input("Commit message: "))
@@ -171,7 +149,7 @@ def local():
                 response = requests.delete(f'https://api.github.com/repos/FGamer112/{name_of_folder}', headers=headers)
                 print(f"Status-code: {response.status_code}\n")
                 #Uploading
-                result = confirming("Upload as private?", "private")
+                result = UI.confirming("Upload as private?", "private")
                 if result == True:
                     public = "false"
                 else:
@@ -201,7 +179,7 @@ def local():
             #--------------------------------------------------
         else:
             os.system("clear")
-            result = confirming("Upload as private?", "private")
+            result = UI.confirming("Upload as private?", "private")
             if result == True:
                 public = "false"
             else:
@@ -229,7 +207,7 @@ def settings():
         api_from_db = refresh("api")
         api_for_print = api_from_db[0:4]+("*"*32)+api_from_db[36:40]
         print(f"Username: {user_from_db}\nEmail: {email_from_db}\nApi: {api_for_print}\n")
-        result = menu("list", "settings", "", [
+        result = UI.menu("list", "settings", "", [
                     {'name':'Username'},
                     {'name':'Email'},
                     {'name':'API-token'},
@@ -252,21 +230,20 @@ def settings():
             con.commit()
             settings()
         elif result == "Install pip packages":
-            from sutils import get_work_env
-            result = menu("list", "environ", "Choose your environment", [
+            result = UI.menu("list", "environ", "Choose your environment", [
                 {"name": "All"},
                 {"name": "Telegram"},
                 {"name": "Stuff"},
                 {"name": "Back"}
             ])
             if result == "All":
-                get_work_env("all")
+                startup_utils.Python.get_work_env("all")
                 settings()
             elif result == "Telegram":
-                get_work_env("telegram")
+                startup_utils.Python.get_work_env("telegram")
                 settings()
             elif result == "Stuff":
-                get_work_env("stuff")
+                startup_utils.Python.get_work_env("stuff")
                 settings()
             elif result == "Back" or result == "Backspace":
                 settings()

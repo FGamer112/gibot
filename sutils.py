@@ -6,7 +6,7 @@ def get_info():
     if platform.system() == "Windows":
         return "Windows"
     if platform.system() == "Linux":
-        return subprocess.check_output(["lsb_release", "-i"], text=True).lower()[16:]
+        return str(subprocess.check_output(["lsb_release", "-i"]).decode("utf-8").lower()[16:])
 
 def get_python_version(result: str):
     """
@@ -42,7 +42,6 @@ def universal_import(value):
             for item1 in value:
                 subprocess.Popen([item, "-m", "pip", "install", item1]).wait()
 
-
 def get_work_env(env: str):
     """
     all
@@ -50,17 +49,25 @@ def get_work_env(env: str):
     telegram
 
     stuff
+
+    django
     """
     telegram_bots = ["aiogram", "telethon", "aiohttp"]
     stuff_utils = ["bs4", "XlsxWriter", "colorama"]
     if env == "all":
         for item in telegram_bots:
-            subprocess.Popen(["python3.9", "-m", "pip", "install", item]).wait()
+            subprocess.Popen(["python3", "-m", "pip", "install", item]).wait()
         for item in stuff_utils:
-            subprocess.Popen(["python3.9", "-m", "pip", "install", item]).wait()
+            subprocess.Popen(["python3", "-m", "pip", "install", item]).wait()
     if env == "telegram":
         for item in telegram_bots:
-            subprocess.Popen(["python3.9", "-m", "pip", "install", item]).wait()
+            subprocess.Popen(["python3", "-m", "pip", "install", item]).wait()
     elif env == "stuff":
         for item in stuff_utils:
-            subprocess.Popen(["python3.9", "-m", "pip", "install", item]).wait()
+            subprocess.Popen(["python3", "-m", "pip", "install", item]).wait()
+    elif env == "django":
+        subprocess.Popen(["python3", "-m", "pip", "install", env]).wait()
+        if get_info() == "opensuse":
+            subprocess.Popen(["sudo", "zypper", "-n", "install", "--force", "python3-Django"])
+        else:
+            print(f"Your system is not exist in script. Please, send to devs at https://t.me/X0R_Tw1nky name of your system from console. We will add your system soon!)\n\nSystem name: {get_info()}")
