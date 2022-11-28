@@ -41,6 +41,13 @@ def refresh(item = "user, email or api"):
     os.system(f"git config --global user.name {user_from_db}")
     os.system(f"git config --global user.email {email_from_db}")
     os.system("clear")
+def global_config():
+    user_from_db = str(cur.execute("""SELECT username FROM saves""").fetchall()[0][0])
+    email_from_db = str(cur.execute("""SELECT email FROM saves""").fetchall()[0][0])
+    os.system(f"git config --global user.name {user_from_db}")
+    os.system(f"git config --global user.email {email_from_db}")
+    os.system("clear")
+global_config()
 #--------------------------------------------------
 
 #Path and folders
@@ -83,7 +90,7 @@ def github():
         os.system("clear")
         result = UI.confirming(result, "repo")
         if result == True:
-            if os.path.exists(f"{path}/{result}"):
+            if os.path.exists(f"{path}/{name_of_folder}"):
                 result = UI.confirming("Folder exists, replace with remote?", "replace")
                 if result == True:
                     os.system(f"rm -rf {path}/{name_of_folder}")
@@ -201,6 +208,7 @@ def local():
 
 #Settings
 def settings():
+        global_config()
         os.system("clear")
         user_from_db = refresh("user")
         email_from_db = refresh("email")
